@@ -136,43 +136,43 @@ functions in GHCi and insert the corresponding resulting output below:
 
 List of booleans:
 >>> :t [True, False]
-
+[True, False] :: [Bool]
 
 String is a list of characters:
 >>> :t "some string"
-
+"some string" :: [Char]
 
 Empty list:
 >>> :t []
-
+[] :: [a]
 
 Append two lists:
 >>> :t (++)
-
+(++) :: [a] -> [a] -> [a]
 
 Prepend an element at the beginning of a list:
 >>> :t (:)
-
+(:) :: a -> [a] -> [a]
 
 Reverse a list:
 >>> :t reverse
-
+reverse :: [a] -> [a]
 
 Take first N elements of a list:
 >>> :t take
-
+take :: Int -> [a] -> [a]
 
 Create list from N same elements:
 >>> :t replicate
-
+replicate :: Int -> a -> [a]
 
 Split a string by line breaks:
 >>> :t lines
-
+lines :: String -> [String]
 
 Join a list of strings with line breaks:
 >>> :t unlines
-
+unlines :: [String] -> String
 
 -}
 
@@ -186,30 +186,43 @@ Evaluate the following expressions in GHCi and insert the answers. Try
 to guess first, what you will see.
 
 >>> [10, 2] ++ [3, 1, 5]
+[10,2,3,1,5]
 
 >>> [] ++ [1, 4]  -- [] is an empty list
+[1,4]
 
 >>> 3 : [1, 2]
+[3,1,2]
 
 >>> 4 : 2 : [5, 10]  -- prepend multiple elements
+[4,2,5,10]
 
 >>> [1 .. 10]  -- list ranges
+[1,2,3,4,5,6,7,8,9,10]
 
 >>> [10 .. 1]
+[]
 
 >>> [10, 9 .. 1]  -- backwards list with explicit step
+[10,9,8,7,6,5,4,3,2,1]
 
 >>> length [4, 10, 5]  -- list length
+3
 
 >>> replicate 5 True
+[True,True,True,True,True]
 
 >>> take 5 "Hello, World!"
+"Hello"
 
 >>> drop 5 "Hello, World!"
+", World!"
 
 >>> zip "abc" [1, 2, 3]  -- convert two lists to a single list of pairs
+[('a',1),('b',2),('c',3)]
 
 >>> words "Hello   Haskell     World!"  -- split the string into the list of words
+["Hello","Haskell","World!"]
 
 
 
@@ -336,7 +349,26 @@ from it!
 ghci> :l src/Chapter2.hs
 -}
 subList :: Int -> Int -> [a] -> [a]
-subList = error "subList: Not implemented!"
+-- subList = error "subList: Not implemented!"
+{-
+Edge cases: end is greater than start, start > length - 1, end > length - 1,
+start < 0, end < 0, list is empty
+
+[1 2 3 4 5 6 7 8 9 10]
+let num = (min e ar.length - 1) - s + 1
+let list1 = splitat 3 arr = ([1 2 3], [4 5 6 7 8 9 10])
+let list2 = splitat num (snd list1) = ([4 5 6], [7 8 9 10])
+return fst list2
+-}
+-- TODO debug subList
+subList s e ar =
+  if s > e  || s < 0 || e < 0 || (length ar == 0) || (s > length ar - 1)
+    then []
+    else
+      let num = (min e (length ar - 1)) - s + 1
+          pair1 = splitAt num ar
+          pair2 = splitAt num (snd pair1)
+      in fst pair2
 
 {- |
 =⚔️= Task 4
@@ -348,8 +380,11 @@ Implement a function that returns only the first half of a given list.
 >>> firstHalf "bca"
 "b"
 -}
--- PUT THE FUNCTION TYPE IN HERE
-firstHalf l = error "firstHalf: Not implemented!"
+firstHalf :: [a] -> [a]
+-- firstHalf l = error "firstHalf: Not implemented!"
+firstHalf l =
+  let half = div (length l) 2
+  in fst (splitAt half l)
 
 
 {- |
